@@ -1,0 +1,229 @@
+@import "tailwindcss";
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+
+@keyframes gallop {
+  0% { transform: translateX(-20px) translateY(0) rotate(-4deg); }
+  25% { transform: translateX(0px) translateY(-15px) rotate(4deg); }
+  50% { transform: translateX(20px) translateY(0) rotate(-4deg); }
+  75% { transform: translateX(0px) translateY(-15px) rotate(4deg); }
+  100% { transform: translateX(-20px) translateY(0) rotate(-4deg); }
+}
+
+@keyframes swim {
+  0% { transform: translateX(-30px) translateY(0px) scaleX(1); }
+  25% { transform: translateX(0px) translateY(-8px) scaleX(1); }
+  49% { transform: translateX(30px) translateY(0px) scaleX(1); }
+  50% { transform: translateX(30px) translateY(0px) scaleX(-1); }
+  75% { transform: translateX(0px) translateY(-8px) scaleX(-1); }
+  99% { transform: translateX(-30px) translateY(0px) scaleX(-1); }
+  100% { transform: translateX(-30px) translateY(0px) scaleX(1); }
+}
+
+@keyframes kenburns {
+  0% { transform: scale(1.0) translate(0, 0); }
+  50% { transform: scale(1.08) translate(-1%, -1%); }
+  100% { transform: scale(1.12) translate(1%, 0.5%); }
+}
+
+@keyframes cradle {
+  0% { transform: rotate(-6deg) translateY(0px); }
+  50% { transform: rotate(6deg) translateY(-6px); }
+  100% { transform: rotate(-6deg) translateY(0px); }
+}
+
+.animate-float {
+  animation: float 2.5s ease-in-out infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 1s ease-in-out infinite;
+}
+
+.animate-gallop {
+  animation: gallop 1.6s ease-in-out infinite;
+}
+
+.animate-swim {
+  animation: swim 4s ease-in-out infinite;
+}
+
+.animate-cradle {
+  animation: cradle 3s ease-in-out infinite;
+}
+
+.animate-kenburns {
+  animation: kenburns 12s ease-in-out infinite alternate;
+}
+
+.hulta-dulta {
+  animation: float 2s infinite ease-in-out, wiggle 1.2s infinite ease-in-out;
+}
+
+/* ========================================================
+   LIVE 2D CARTOON ANIMATION ENGINE FOR KIDZEE
+   ======================================================== */
+
+@keyframes cartoonBreathe {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.035, 0.97) translateY(-3px); }
+}
+
+@keyframes characterBlink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.08); }
+}
+
+@keyframes pawStep {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-12px) rotate(-4deg) scale(1.02); }
+  50% { transform: translateY(0) rotate(0deg); }
+  75% { transform: translateY(-12px) rotate(4deg) scale(1.02); }
+}
+
+@keyframes mouseScurry {
+  0% { transform: translateX(-40px) scaleX(1); }
+  45% { transform: translateX(40px) scaleX(1); }
+  50% { transform: translateX(40px) scaleX(-1); }
+  95% { transform: translateX(-40px) scaleX(-1); }
+  100% { transform: translateX(-40px) scaleX(1); }
+}
+
+@keyframes tailWag {
+  0%, 100% { transform: rotate(-14deg); }
+  50% { transform: rotate(14deg); }
+}
+
+@keyframes bubbleRise {
+  0% { transform: translateY(110%) translateX(0) scale(0.6); opacity: 0; }
+  15% { opacity: 0.85; }
+  50% { transform: translateY(45%) translateX(15px) scale(0.95); opacity: 0.9; }
+  85% { opacity: 0.85; }
+  100% { transform: translateY(-30%) translateX(-15px) scale(1.15); opacity: 0; }
+}
+
+@keyframes butterflyFlap {
+  0%, 100% { transform: scaleX(1) rotate(-4deg); }
+  50% { transform: scaleX(0.18) rotate(4deg); }
+}
+
+@keyframes moonSway {
+  0%, 100% { transform: translateY(0) rotate(-3deg) scale(1); }
+  50% { transform: translateY(-10px) rotate(3deg) scale(1.03); }
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.75); }
+  50% { opacity: 1; transform: scale(1.25); filter: drop-shadow(0 0 8px #fde047); }
+}
+
+@keyframes breezeDrift {
+  0% { transform: translateX(-15%); }
+  50% { transform: translateX(15%); }
+  100% { transform: translateX(-15%); }
+}
+
+@keyframes springBoing {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  35% { transform: translateY(-30px) scale(0.9, 1.15); }
+  65% { transform: translateY(0) scale(1.18, 0.85); }
+  80% { transform: translateY(-8px) scale(0.98, 1.02); }
+}
+
+@keyframes waterRipples {
+  0% { transform: scale(0.85); opacity: 0.9; }
+  50% { transform: scale(1.05); opacity: 0.6; }
+  100% { transform: scale(0.85); opacity: 0.9; }
+}
+
+@keyframes slowPanZoom {
+  0% { transform: scale(1.0) translate(0%, 0%); }
+  50% { transform: scale(1.06) translate(-1.5%, -0.8%); }
+  100% { transform: scale(1.02) translate(1.5%, 0.8%); }
+}
+
+@keyframes leafSway {
+  0%, 100% { transform: rotate(-8deg) translateY(0); }
+  50% { transform: rotate(8deg) translateY(-4px); }
+}
+
+.animate-cartoon-breathe {
+  animation: cartoonBreathe 3s ease-in-out infinite;
+}
+
+.animate-character-blink {
+  animation: characterBlink 3.8s infinite;
+}
+
+.animate-paw-step {
+  animation: pawStep 1.4s ease-in-out infinite;
+}
+
+.animate-mouse-scurry {
+  animation: mouseScurry 2.6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
+
+.animate-tail-wag {
+  transform-origin: left center;
+  animation: tailWag 0.8s ease-in-out infinite;
+}
+
+.animate-bubble-rise-1 {
+  animation: bubbleRise 3.5s ease-in infinite;
+}
+.animate-bubble-rise-2 {
+  animation: bubbleRise 4.2s ease-in 1.2s infinite;
+}
+.animate-bubble-rise-3 {
+  animation: bubbleRise 3.8s ease-in 2s infinite;
+}
+
+.animate-butterfly-wing {
+  transform-origin: center;
+  animation: butterflyFlap 0.35s ease-in-out infinite;
+}
+
+.animate-moon-sway {
+  animation: moonSway 4.5s ease-in-out infinite;
+}
+
+.animate-star-twinkle-1 {
+  animation: starTwinkle 2s ease-in-out infinite;
+}
+.animate-star-twinkle-2 {
+  animation: starTwinkle 2.8s ease-in-out 0.8s infinite;
+}
+.animate-star-twinkle-3 {
+  animation: starTwinkle 3.2s ease-in-out 1.5s infinite;
+}
+
+.animate-breeze-drift {
+  animation: breezeDrift 16s ease-in-out infinite;
+}
+
+.animate-spring-boing {
+  animation: springBoing 1.2s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
+}
+
+.animate-water-ripples {
+  animation: waterRipples 3s ease-in-out infinite;
+}
+
+.animate-slow-pan-zoom {
+  animation: slowPanZoom 14s ease-in-out infinite alternate;
+}
+
+.animate-leaf-sway {
+  transform-origin: top center;
+  animation: leafSway 3s ease-in-out infinite;
+}
+
