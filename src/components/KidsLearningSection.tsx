@@ -20,7 +20,8 @@ import {
   CheckCircle2,
   ChevronRight,
   X,
-  Crown
+  Crown,
+  Globe
 } from 'lucide-react';
 import { speakLangText } from '../utils/audioSynth';
 
@@ -50,17 +51,55 @@ interface TabMeta {
   color: string;
 }
 
+export const SUPPORTED_LANGUAGES = [
+  { code: 'en', label: 'English' },
+  { code: 'hi', label: 'हिंदी (Hindi)' },
+  { code: 'zh', label: '中文 (Chinese)' },
+  { code: 'es', label: 'Español (Spanish)' },
+  { code: 'fr', label: 'Français (French)' },
+  { code: 'de', label: 'Deutsch (German)' },
+  { code: 'ar', label: 'العربية (Arabic)' },
+  { code: 'ru', label: 'Русский (Russian)' },
+  { code: 'pt', label: 'Português (Portuguese)' },
+  { code: 'ja', label: '日本語 (Japanese)' },
+  { code: 'ko', label: '한국어 (Korean)' },
+  { code: 'it', label: 'Italiano (Italian)' },
+  { code: 'tr', label: 'Türkçe (Turkish)' },
+  { code: 'nl', label: 'Nederlands (Dutch)' },
+  { code: 'pl', label: 'Polski (Polish)' },
+  { code: 'id', label: 'Bahasa Indonesia' },
+  { code: 'ms', label: 'Bahasa Melayu (Malay)' },
+  { code: 'sw', label: 'Kiswahili (Swahili)' },
+  { code: 'th', label: 'ไทย (Thai)' },
+  { code: 'vi', label: 'Tiếng Việt' },
+  { code: 'fa', label: 'فارسی (Persian)' },
+  { code: 'bn', label: 'বাংলা (Bengali)' },
+  { code: 'te', label: 'తెలుగు (Telugu)' },
+  { code: 'mr', label: 'मराठी (Marathi)' },
+  { code: 'ta', label: 'தமிழ் (Tamil)' },
+  { code: 'gu', label: 'ગુજરાતી (Gujarati)' },
+  { code: 'ur', label: 'اردو (Urdu)' },
+  { code: 'kn', label: 'ಕನ್ನಡ (Kannada)' },
+  { code: 'ml', label: 'മലയാളം (Malayalam)' },
+  { code: 'pa', label: 'ਪੰਜਾਬੀ (Punjabi)' },
+  { code: 'or', label: 'ଓଡ଼ିଆ (Odia)' },
+  { code: 'as', label: 'অসমীয়া (Assamese)' },
+  { code: 'ne', label: 'नेपाली (Nepali)' },
+  { code: 'si', label: 'සිංහල (Sinhala)' },
+  { code: 'sa', label: 'संस्कृतम् (Sanskrit)' },
+];
+
 const TABS: TabMeta[] = [
   { id: 'abcd', title: 'A B C D', hindiTitle: 'ए बी सी डी', emoji: '🔤', freeDesc: 'A to M FREE • N to Z VIP', color: 'from-pink-500 to-rose-600' },
   { id: 'varnamala', title: 'वर्णमाला', hindiTitle: 'क ख ग घ', emoji: '🕉️', freeDesc: 'क to ण FREE • त to ज्ञ VIP', color: 'from-amber-500 to-orange-600' },
   { id: 'numbers', title: 'गिनती (1-100)', hindiTitle: 'Numbers', emoji: '🔢', freeDesc: '1 to 50 FREE • 51 to 100 VIP', color: 'from-emerald-500 to-teal-600' },
   { id: 'tables', title: 'पहाड़े (2-20)', hindiTitle: 'Math Tables', emoji: '✖️', freeDesc: 'Table 2-10 FREE • 11-20 VIP', color: 'from-blue-500 to-indigo-600' },
-  { id: 'animals', title: 'जानवर (Animals)', hindiTitle: '50 Animals', emoji: '🦁', freeDesc: '25 FREE • 25 VIP', color: 'from-amber-600 to-orange-700' },
-  { id: 'birds', title: 'पक्षी (Birds)', hindiTitle: '50 Birds', emoji: '🦜', freeDesc: '25 FREE • 25 VIP', color: 'from-sky-500 to-blue-600' },
-  { id: 'flowers', title: 'फूल (Flowers)', hindiTitle: '50 Flowers', emoji: '🌸', freeDesc: '25 FREE • 25 VIP', color: 'from-rose-400 to-pink-600' },
-  { id: 'fruits', title: 'फल (Fruits)', hindiTitle: '50 Fruits', emoji: '🍎', freeDesc: '25 FREE • 25 VIP', color: 'from-red-500 to-amber-500' },
-  { id: 'vegetables', title: 'सब्जियां (Veggies)', hindiTitle: '50 Vegetables', emoji: '🥦', freeDesc: '25 FREE • 25 VIP', color: 'from-green-500 to-emerald-700' },
-  { id: 'vehicles', title: 'वाहन (Vehicles)', hindiTitle: '50 Vehicles', emoji: '🚗', freeDesc: '25 FREE • 25 VIP', color: 'from-indigo-500 to-violet-600' },
+  { id: 'animals', title: 'जानवर (Animals)', hindiTitle: '20 Animals', emoji: '🦁', freeDesc: '10 FREE • 10 VIP', color: 'from-amber-600 to-orange-700' },
+  { id: 'birds', title: 'पक्षी (Birds)', hindiTitle: '20 Birds', emoji: '🦜', freeDesc: '10 FREE • 10 VIP', color: 'from-sky-500 to-blue-600' },
+  { id: 'flowers', title: 'फूल (Flowers)', hindiTitle: '20 Flowers', emoji: '🌸', freeDesc: '10 FREE • 10 VIP', color: 'from-rose-500 to-pink-600' },
+  { id: 'fruits', title: 'फल (Fruits)', hindiTitle: '20 Fruits', emoji: '🍎', freeDesc: '10 FREE • 10 VIP', color: 'from-red-500 to-amber-500' },
+  { id: 'vegetables', title: 'सब्जियां (Veggies)', hindiTitle: '20 Vegetables', emoji: '🥦', freeDesc: '10 FREE • 10 VIP', color: 'from-green-500 to-emerald-700' },
+  { id: 'vehicles', title: 'वाहन (Vehicles)', hindiTitle: '20 Vehicles', emoji: '🚗', freeDesc: '10 FREE • 10 VIP', color: 'from-indigo-500 to-violet-600' },
 ];
 
 export const KidsLearningSection: React.FC<KidsLearningSectionProps> = ({
@@ -68,6 +107,7 @@ export const KidsLearningSection: React.FC<KidsLearningSectionProps> = ({
   onOpenPremium
 }) => {
   const [activeTab, setActiveTab] = useState<LearningTab>('abcd');
+  const [selectedLang, setSelectedLang] = useState<string>('en');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [speakingId, setSpeakingId] = useState<string | null>(null);
 
@@ -152,7 +192,7 @@ export const KidsLearningSection: React.FC<KidsLearningSectionProps> = ({
         </div>
 
         {/* Search for Photo items */}
-        {['animals', 'birds', 'flowers', 'fruits', 'vegetables', 'vehicles'].includes(activeTab) && (
+        {['animals', 'birds', 'fruits', 'vegetables', 'vehicles'].includes(activeTab) && (
           <div className="relative w-full sm:w-64">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/70" />
             <input
@@ -491,33 +531,65 @@ export const KidsLearningSection: React.FC<KidsLearningSectionProps> = ({
       )}
 
       {/* =========================================================================
-          SECTIONS 5 TO 10: 50 PHOTOS EACH (Animals, Birds, Flowers, Fruits, Veggies, Vehicles)
-          25 FREE, 25 PREMIUM
+          SECTIONS: 20 ITEMS EACH (Animals, Birds, Flowers, Fruits, Veggies, Vehicles)
+          10 FREE (id 1-10), 10 PREMIUM (id 11-20)
          ========================================================================= */}
       {['animals', 'birds', 'flowers', 'fruits', 'vegetables', 'vehicles'].includes(activeTab) && (
         <div className="space-y-3">
-          <div className="flex items-center justify-between text-xs font-bold text-slate-600 px-1">
-            <span>
-              📸 1 से 25 आइटम बिल्कुल मुफ्त (FREE) • 26 से 50 आइटम प्रीमियम (VIP 🔒)
-            </span>
-            <span className="text-orange-700">फोटो देखकर अंग्रेजी व हिंदी नाम सीखें</span>
+          {/* Top Bar: Free/VIP info & Language Selector */}
+          <div className="bg-white rounded-2xl p-3 border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-600">
+              <span className="bg-amber-100 text-amber-900 px-2.5 py-0.5 rounded-full">
+                📸 1-10 FREE • 11-20 VIP 🔒
+              </span>
+            </div>
+
+            {/* Language Selector (35 Languages) */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 text-xs font-bold text-slate-700">
+                <Globe className="w-3.5 h-3.5 text-orange-500" />
+                <span>भाषा (Language):</span>
+              </div>
+              <select
+                value={selectedLang}
+                onChange={(e) => setSelectedLang(e.target.value)}
+                className="text-xs font-bold bg-amber-50 text-amber-950 border border-amber-300 rounded-xl px-2.5 py-1 focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-xs cursor-pointer"
+              >
+                {SUPPORTED_LANGUAGES.map((lang) => (
+                  <option key={lang.code} value={lang.code}>
+                    {lang.label} ({lang.code})
+                  </option>
+                ))}
+              </select>
+              {selectedLang !== 'en' && (
+                <button
+                  onClick={() => setSelectedLang('en')}
+                  className="text-[10px] font-bold text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded-lg transition-colors"
+                >
+                  English
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
             {filteredCategoryItems.map((item, idx) => {
-              const isLocked = idx >= 25 && !isPremium;
+              const isLocked = (item.premium || idx >= 10) && !isPremium;
               const isSpeaking = speakingId === `cat-${item.id}`;
+              const displayName = selectedLang === 'en'
+                ? item.name
+                : (item.translations?.[selectedLang] || item.name);
 
               return (
                 <div
                   key={item.id}
                   onClick={() => {
                     if (isLocked) {
-                      triggerLocked(`प्रीमियम लें और सभी 50 ${currentTabMeta.hindiTitle} अनलॉक करें!`);
+                      triggerLocked("Unlock Premium to open!");
                       return;
                     }
                     setActivePhotoItem(item);
-                    handleSpeak(`${item.name}। ${item.hindiName}।`, `cat-${item.id}`, 'en', 0.85);
+                    handleSpeak(`${displayName}। ${item.name}।`, `cat-${item.id}`, selectedLang === 'hi' ? 'hi' : 'en', 0.85);
                   }}
                   className={`group bg-white rounded-2xl p-2.5 sm:p-3 border-2 transition-all cursor-pointer shadow-xs hover:shadow-lg relative flex flex-col justify-between ${
                     isLocked
@@ -531,7 +603,7 @@ export const KidsLearningSection: React.FC<KidsLearningSectionProps> = ({
                   {isLocked && (
                     <div className="absolute top-2 right-2 z-10 bg-amber-400 text-slate-900 px-2 py-0.5 rounded-full shadow-md flex items-center gap-1 text-[10px] font-black">
                       <Lock className="w-3 h-3" />
-                      <span>VIP</span>
+                      <span>VIP 🔒</span>
                     </div>
                   )}
 
@@ -552,7 +624,7 @@ export const KidsLearningSection: React.FC<KidsLearningSectionProps> = ({
                         if (parent && !parent.querySelector('.emoji-fallback')) {
                           const fallback = document.createElement('div');
                           fallback.className = 'emoji-fallback text-5xl flex items-center justify-center w-full h-full bg-gradient-to-tr from-amber-100 to-yellow-100';
-                          fallback.innerText = item.emoji;
+                          fallback.innerText = item.emoji || '✨';
                           parent.appendChild(fallback);
                         }
                       }}
@@ -562,7 +634,7 @@ export const KidsLearningSection: React.FC<KidsLearningSectionProps> = ({
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleSpeak(`${item.name}। ${item.hindiName}।`, `cat-${item.id}`, 'en', 0.85);
+                          handleSpeak(`${displayName}। ${item.name}।`, `cat-${item.id}`, selectedLang === 'hi' ? 'hi' : 'en', 0.85);
                         }}
                         aria-label="Pronounce"
                         className={`absolute bottom-2 right-2 p-2 rounded-full backdrop-blur-xs transition-transform active:scale-90 shadow-md ${
@@ -576,14 +648,16 @@ export const KidsLearningSection: React.FC<KidsLearningSectionProps> = ({
                     )}
                   </div>
 
-                  {/* Name Label */}
-                  <div className="text-center pt-1">
+                  {/* Name Label: English by default, or translated name when language selected */}
+                  <div className="text-center pt-1.5 pb-0.5">
                     <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight leading-tight group-hover:text-orange-600 transition-colors">
-                      {item.name}
+                      {displayName}
                     </h3>
-                    <p className="text-xs sm:text-sm font-bold text-amber-700 mt-0.5">
-                      {item.hindiName}
-                    </p>
+                    {selectedLang !== 'en' && (
+                      <span className="text-[11px] font-semibold text-slate-400 block mt-0.5">
+                        {item.name}
+                      </span>
+                    )}
                   </div>
                 </div>
               );
@@ -623,6 +697,10 @@ export const KidsLearningSection: React.FC<KidsLearningSectionProps> = ({
                 alt={activePhotoItem.name}
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  target.style.opacity = '0.5';
+                }}
               />
               <div className="absolute top-3 left-3 bg-white/90 px-3 py-1 rounded-full text-xl shadow-xs">
                 {activePhotoItem.emoji}
@@ -631,8 +709,15 @@ export const KidsLearningSection: React.FC<KidsLearningSectionProps> = ({
 
             <div>
               <h2 className="text-3xl font-black text-slate-900 tracking-tight">
-                {activePhotoItem.name}
+                {selectedLang === 'en'
+                  ? activePhotoItem.name
+                  : (activePhotoItem.translations?.[selectedLang] || activePhotoItem.name)}
               </h2>
+              {selectedLang !== 'en' && (
+                <p className="text-sm font-bold text-slate-400 mt-0.5">
+                  {activePhotoItem.name}
+                </p>
+              )}
               <p className="text-xl font-bold text-amber-600 mt-0.5">
                 {activePhotoItem.hindiName}
               </p>

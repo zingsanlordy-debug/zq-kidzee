@@ -11,14 +11,22 @@ import {
   Eye,
   Grid,
   Lock,
-  Crown
+  Crown,
+  Lightbulb,
+  HelpCircle,
+  ArrowRight,
+  Sparkle
 } from 'lucide-react';
 import { speakLangText } from '../utils/audioSynth';
+import { PAHELIYAN_25_LIST } from '../data/index';
 
 interface KidsPuzzleGamesProps {
   isPremium?: boolean;
   onOpenPremium?: (reason?: string) => void;
 }
+
+// Puzzle Game Types
+type GameType = 'paheli' | 'jigsaw' | 'shadow' | 'memory' | 'shapes';
 
 // 25 Puzzle Levels: 5 FREE, 20 PREMIUM
 interface PuzzleLevelItem {
@@ -29,38 +37,13 @@ interface PuzzleLevelItem {
   isFree: boolean;
 }
 
-const PUZZLE_LEVELS: PuzzleLevelItem[] = [
-  // 5 FREE Puzzles
-  { id: 1, title: 'शेर जिग्सॉ', emoji: '🦁', gameType: 'jigsaw', isFree: true },
-  { id: 2, title: 'पालतू जानवर छाया', emoji: '🐶', gameType: 'shadow', isFree: true },
-  { id: 3, title: 'जानवर मेमोरी पेयर', emoji: '🐵', gameType: 'memory', isFree: true },
-  { id: 4, title: 'आकृतियां मिलान', emoji: '⭕', gameType: 'shapes', isFree: true },
-  { id: 5, title: 'हाथी जिग्सॉ', emoji: '🐘', gameType: 'jigsaw', isFree: true },
-  // 20 PREMIUM Puzzles (VIP 🔒)
-  { id: 6, title: 'सेब फल जिग्सॉ', emoji: '🍎', gameType: 'jigsaw', isFree: false },
-  { id: 7, title: 'कार वाहन जिग्सॉ', emoji: '🚗', gameType: 'jigsaw', isFree: false },
-  { id: 8, title: 'चिड़िया छाया मिलान', emoji: '🦜', gameType: 'shadow', isFree: false },
-  { id: 9, title: 'जंगल सफारी मेमोरी', emoji: '🐯', gameType: 'memory', isFree: false },
-  { id: 10, title: 'रंग-बिरंगे आकार', emoji: '⭐', gameType: 'shapes', isFree: false },
-  { id: 11, title: 'तितली छाया', emoji: '🦋', gameType: 'shadow', isFree: false },
-  { id: 12, title: 'समुद्री जीव मेमोरी', emoji: '🐬', gameType: 'memory', isFree: false },
-  { id: 13, title: 'रॉकेट जिग्सॉ', emoji: '🚀', gameType: 'jigsaw', isFree: false },
-  { id: 14, title: 'कछुआ छाया मिलान', emoji: '🐢', gameType: 'shadow', isFree: false },
-  { id: 15, title: 'फलों की मेमोरी', emoji: '🍓', gameType: 'memory', isFree: false },
-  { id: 16, title: 'त्रिभुज और वर्ग', emoji: '📐', gameType: 'shapes', isFree: false },
-  { id: 17, title: 'डायनासोर जिग्सॉ', emoji: '🦖', gameType: 'jigsaw', isFree: false },
-  { id: 18, title: 'पांडा छाया', emoji: '🐼', gameType: 'shadow', isFree: false },
-  { id: 19, title: 'सुपर मेमोरी मास्टर', emoji: '🧠', gameType: 'memory', isFree: false },
-  { id: 20, title: 'ज्यामितीय आकृति', emoji: '🔷', gameType: 'shapes', isFree: false },
-  { id: 21, title: 'ट्रेन जिग्सॉ', emoji: '🚂', gameType: 'jigsaw', isFree: false },
-  { id: 22, title: 'भालू छाया मिलान', emoji: '🐻', gameType: 'shadow', isFree: false },
-  { id: 23, title: 'म्यूजिकल मेमोरी', emoji: '🎵', gameType: 'memory', isFree: false },
-  { id: 24, title: 'षट्कोण व वृत्त', emoji: '⬡', gameType: 'shapes', isFree: false },
-  { id: 25, title: 'महा पहेली ग्रैंड फाइनल', emoji: '🏆', gameType: 'jigsaw', isFree: false },
-];
-
-// Puzzle Game Types
-type GameType = 'jigsaw' | 'shadow' | 'memory' | 'shapes';
+const PUZZLE_LEVELS: PuzzleLevelItem[] = PAHELIYAN_25_LIST.map((p) => ({
+  id: p.id,
+  title: p.title.replace(/^पहेली \d+:\s*/, ''),
+  emoji: p.emoji,
+  gameType: 'paheli',
+  isFree: p.isFree,
+}));
 
 interface JigsawItem {
   id: string;
@@ -151,8 +134,49 @@ export const KidsPuzzleGames: React.FC<KidsPuzzleGamesProps> = ({
   isPremium = false,
   onOpenPremium
 }) => {
-  const [activeGame, setActiveGame] = useState<GameType>('jigsaw');
+  const [activeGame, setActiveGame] = useState<GameType>('paheli');
   const [selectedLevelId, setSelectedLevelId] = useState<number>(1);
+
+  // ==========================================
+  // 0. PAHELIYAN (RIDDLES) STATE - 25 UNIQUE
+  // ==========================================
+  const [selectedPaheliId, setSelectedPaheliId] = useState<number>(1);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [isAnswerCorrect, setIsAnswerCorrect] = useState<boolean | null>(null);
+  const [showHint, setShowHint] = useState<boolean>(false);
+  const [solvedPaheliIds, setSolvedPaheliIds] = useState<number[]>([]);
+
+  const currentPaheli = PAHELIYAN_25_LIST.find(p => p.id === selectedPaheliId) || PAHELIYAN_25_LIST[0];
+
+  const handleSelectOption = (option: string) => {
+    setSelectedOption(option);
+    if (option === currentPaheli.answer) {
+      setIsAnswerCorrect(true);
+      if (!solvedPaheliIds.includes(currentPaheli.id)) {
+        setSolvedPaheliIds(prev => [...prev, currentPaheli.id]);
+      }
+      speakLangText(`शाबाश! सही उत्तर है ${currentPaheli.answer}!`, 'hi', 1.0);
+    } else {
+      setIsAnswerCorrect(false);
+      speakLangText('दोबारा सोचो! संकेत देखो या फिर से कोशिश करो!', 'hi', 1.0);
+    }
+  };
+
+  const handleNextPaheli = () => {
+    const nextId = selectedPaheliId < 25 ? selectedPaheliId + 1 : 1;
+    const nextPaheli = PAHELIYAN_25_LIST.find(p => p.id === nextId);
+    if (nextPaheli && !nextPaheli.isFree && !isPremium) {
+      if (onOpenPremium) {
+        onOpenPremium(`प्रीमियम लें और लेवल ${nextId} (${nextPaheli.title}) समेत सभी 25 पहेलियां अनलॉक करें!`);
+      }
+      return;
+    }
+    setSelectedPaheliId(nextId);
+    setSelectedLevelId(nextId);
+    setSelectedOption(null);
+    setIsAnswerCorrect(null);
+    setShowHint(false);
+  };
 
   // ==========================================
   // 1. JIGSAW STATE
@@ -364,8 +388,20 @@ export const KidsPuzzleGames: React.FC<KidsPuzzleGamesProps> = ({
           </div>
         </div>
 
-        {/* 4 Mode Buttons */}
+        {/* 5 Mode Buttons */}
         <div className="flex items-center gap-1.5 bg-white/20 p-1 rounded-2xl backdrop-blur-xs border border-white/20 flex-wrap">
+          <button
+            onClick={() => setActiveGame('paheli')}
+            className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all ${
+              activeGame === 'paheli'
+                ? 'bg-white text-purple-900 shadow-xs'
+                : 'text-white hover:bg-white/10'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <span>बाल पहेलियाँ (25 Riddles)</span>
+          </button>
+
           <button
             onClick={() => setActiveGame('jigsaw')}
             className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all ${
@@ -421,7 +457,7 @@ export const KidsPuzzleGames: React.FC<KidsPuzzleGamesProps> = ({
         <div className="flex items-center justify-between text-xs font-bold text-slate-600 px-1">
           <span className="flex items-center gap-1.5">
             <span>🎯</span>
-            <span>लेवल 1-5 बिल्कुल मुफ्त (FREE) • लेवल 6-25 प्रीमियम (VIP 🔒)</span>
+            <span>25 अनोखी बाल पहेलियाँ (लेवल 1-5 FREE • लेवल 6-25 VIP 🔒)</span>
           </span>
           {isPremium ? (
             <span className="text-emerald-600 flex items-center gap-1">
@@ -449,10 +485,18 @@ export const KidsPuzzleGames: React.FC<KidsPuzzleGamesProps> = ({
                     return;
                   }
                   setSelectedLevelId(lvl.id);
-                  setActiveGame(lvl.gameType);
-                  if (lvl.gameType === 'jigsaw') {
-                    const preset = JIGSAW_PRESETS[(lvl.id - 1) % JIGSAW_PRESETS.length];
-                    resetJigsaw(preset);
+                  if (lvl.gameType === 'paheli') {
+                    setActiveGame('paheli');
+                    setSelectedPaheliId(lvl.id);
+                    setSelectedOption(null);
+                    setIsAnswerCorrect(null);
+                    setShowHint(false);
+                  } else {
+                    setActiveGame(lvl.gameType);
+                    if (lvl.gameType === 'jigsaw') {
+                      const preset = JIGSAW_PRESETS[(lvl.id - 1) % JIGSAW_PRESETS.length];
+                      resetJigsaw(preset);
+                    }
                   }
                 }}
                 className={`relative px-3 py-2 rounded-xl text-xs font-black shrink-0 flex items-center gap-1.5 transition-all active:scale-95 ${
@@ -471,6 +515,195 @@ export const KidsPuzzleGames: React.FC<KidsPuzzleGamesProps> = ({
           })}
         </div>
       </div>
+
+      {/* ========================================================
+          0. UNIQUE HINDI PAHELIYAN SECTION (25 Riddles, 3 Options)
+      ======================================================== */}
+      {activeGame === 'paheli' && (
+        <div className="bg-white rounded-3xl p-5 sm:p-7 border-2 border-purple-200 shadow-sm space-y-6">
+          {/* Header Bar */}
+          <div className="flex items-center justify-between flex-wrap gap-3 pb-4 border-b border-purple-100">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 text-white flex items-center justify-center text-2xl shadow-sm">
+                {currentPaheli.emoji}
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800">
+                    पहेली {currentPaheli.id} / 25
+                  </span>
+                  {currentPaheli.isFree ? (
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
+                      मुफ़्त (Free)
+                    </span>
+                  ) : (
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 flex items-center gap-1">
+                      <Crown className="w-3 h-3" /> वीआईपी
+                    </span>
+                  )}
+                </div>
+                <h3 className="text-lg sm:text-xl font-black text-slate-900 mt-0.5">
+                  {currentPaheli.title}
+                </h3>
+              </div>
+            </div>
+
+            {/* Actions: Audio Listen & Hint */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => speakLangText(currentPaheli.riddle, 'hi', 0.9)}
+                className="px-3 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-bold flex items-center gap-1.5 transition-all border border-purple-200"
+                title="पहेली सुनो"
+              >
+                <Volume2 className="w-4 h-4 text-purple-600" />
+                <span>सुनो (Audio)</span>
+              </button>
+
+              <button
+                onClick={() => setShowHint(prev => !prev)}
+                className={`px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all border ${
+                  showHint
+                    ? 'bg-amber-100 text-amber-900 border-amber-300'
+                    : 'bg-amber-50 hover:bg-amber-100 text-amber-700 border-amber-200'
+                }`}
+                title="संकेत देखें"
+              >
+                <Lightbulb className="w-4 h-4 text-amber-600" />
+                <span>{showHint ? 'संकेत छुपाओ' : 'संकेत (Hint)'}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setSelectedOption(null);
+                  setIsAnswerCorrect(null);
+                  setShowHint(false);
+                }}
+                className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold transition-all"
+                title="रीसेट करें"
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Hint Card (if open) */}
+          {showHint && (
+            <div className="bg-amber-50 rounded-2xl p-3.5 border border-amber-200 text-amber-900 flex items-start gap-2.5 text-xs sm:text-sm animate-fadeIn">
+              <Lightbulb className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+              <div>
+                <span className="font-bold">संकेत (Hint): </span>
+                <span>{currentPaheli.hint}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Riddle Card */}
+          <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-3xl p-6 sm:p-8 border border-purple-100 shadow-inner text-center space-y-4">
+            <span className="text-4xl sm:text-5xl block animate-bounce">
+              🤔
+            </span>
+            <p className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight leading-relaxed max-w-2xl mx-auto">
+              "{currentPaheli.riddle}"
+            </p>
+            <p className="text-xs sm:text-sm font-bold text-purple-700">
+              बूझो तो जाने! नीचे दिए गए 3 विकल्पों में से सही उत्तर चुनो:
+            </p>
+          </div>
+
+          {/* Exactly 3 Options Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {currentPaheli.options.map((opt, idx) => {
+              const isSelected = selectedOption === opt;
+              const isCorrectOpt = opt === currentPaheli.answer;
+              const optLetter = ['क', 'ख', 'ग'][idx] || `${idx + 1}`;
+
+              let btnStyle = 'bg-white hover:bg-purple-50 text-slate-800 border-2 border-purple-200 hover:border-purple-400 shadow-xs';
+
+              if (isSelected) {
+                if (isAnswerCorrect) {
+                  btnStyle = 'bg-emerald-500 text-white border-2 border-emerald-600 shadow-md scale-102 ring-4 ring-emerald-200';
+                } else {
+                  btnStyle = 'bg-rose-500 text-white border-2 border-rose-600 shadow-md scale-102 ring-4 ring-rose-200';
+                }
+              } else if (isAnswerCorrect && isCorrectOpt) {
+                btnStyle = 'bg-emerald-100 text-emerald-900 border-2 border-emerald-400';
+              }
+
+              return (
+                <button
+                  key={opt}
+                  onClick={() => handleSelectOption(opt)}
+                  className={`p-4 rounded-2xl font-black text-base sm:text-lg flex items-center justify-between gap-3 transition-all transform active:scale-95 cursor-pointer ${btnStyle}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black ${
+                      isSelected && isAnswerCorrect ? 'bg-white/20 text-white' : 'bg-purple-100 text-purple-800'
+                    }`}>
+                      {optLetter}
+                    </span>
+                    <span>{opt}</span>
+                  </div>
+                  {isSelected && isAnswerCorrect && (
+                    <CheckCircle2 className="w-5 h-5 text-white" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Success / Result Feedback */}
+          {isAnswerCorrect === true && (
+            <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-4 sm:p-5 text-white shadow-md flex flex-col sm:flex-row items-center justify-between gap-4 animate-fadeIn">
+              <div className="flex items-center gap-3 text-center sm:text-left">
+                <span className="text-3xl sm:text-4xl">{currentPaheli.emoji}</span>
+                <div>
+                  <h4 className="font-black text-base sm:text-lg">
+                    🎉 वाह! बिल्कुल सही उत्तर: {currentPaheli.answer}!
+                  </h4>
+                  <p className="text-xs text-white/90 mt-0.5">
+                    {currentPaheli.funFact}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={handleNextPaheli}
+                className="px-5 py-2.5 rounded-xl bg-white text-emerald-800 hover:bg-emerald-50 font-black text-sm flex items-center gap-2 shadow-sm shrink-0 transition-transform active:scale-95"
+              >
+                <span>अगली पहेली</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
+          {isAnswerCorrect === false && (
+            <div className="bg-rose-50 rounded-2xl p-4 border border-rose-200 text-rose-800 flex items-center justify-between gap-3 animate-fadeIn">
+              <div className="flex items-center gap-2 text-xs sm:text-sm font-bold">
+                <span>❌</span>
+                <span>गलत जवाब! कोई बात नहीं, ऊपर "संकेत (Hint)" देखकर फिर से सोचो!</span>
+              </div>
+              <button
+                onClick={() => setShowHint(true)}
+                className="px-3 py-1.5 rounded-lg bg-rose-200 hover:bg-rose-300 text-rose-900 font-bold text-xs shrink-0"
+              >
+                संकेत देखें
+              </button>
+            </div>
+          )}
+
+          {/* Solved Progress Counter */}
+          <div className="flex items-center justify-between text-xs text-slate-500 pt-2">
+            <div className="flex items-center gap-1.5">
+              <Trophy className="w-4 h-4 text-amber-500" />
+              <span>सुलझाई गई पहेलियाँ: <b>{solvedPaheliIds.length} / 25</b></span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+              <span>{solvedPaheliIds.length * 10} अंक</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ========================================================
           1. JIGSAW PUZZLE SECTION

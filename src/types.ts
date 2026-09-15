@@ -174,3 +174,17 @@ export interface LiveQuestion {
     time: number;
   }[];
 }
+
+export interface PaheliItem {
+  id: number;
+  title: string;
+  riddle: string;
+  options: [string, string, string]; // 3 options for kids age 5-10
+  answer: string;
+  answerIndex: number;
+  emoji: string;
+  hint: string;
+  funFact: string;
+  soundPhrase: string;
+  isFree: boolean;
+}
